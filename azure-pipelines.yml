@@ -47,12 +47,16 @@ steps:
     zipAfterPublish: false
 
 stages:
+
   - stage: DeployWebsite
     displayName: 'Deploy website'        
-    pool:
-      vmImage: windows-latest
-    
     jobs:    
+    - job: DeployJob
+      displayName: 'Deploy Job'
+      pool:
+        vmImage: 'windows-latest'
+    
+        
     - deployment: DeployWebsite
       displayName: 'Deploy website'
       environment: 'Windows 11 server.WebserverIIS'
