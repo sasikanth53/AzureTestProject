@@ -55,7 +55,7 @@ stages:
     jobs:    
     - deployment: DeployWebsite
       displayName: 'Deploy website'
-      environment: 'Production.WebserverIIS'
+      environment: 'Windows 11 server.WebserverIIS'
       strategy:
        runOnce:
          deploy:           
