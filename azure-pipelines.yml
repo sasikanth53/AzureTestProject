@@ -60,8 +60,7 @@ stages:
        runOnce:
          deploy:           
           steps:
-          - checkout: none
-          
+          - checkout: none          
           - download: 'buildPipeline'
             name: 'DownloadBuildArtifacts'            
             displayName: 'Download build artifacts'
