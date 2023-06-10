@@ -35,7 +35,7 @@ stages:
                 - download: 'buildPipeline'
                   name: 'DownloadBuildArtifacts'
                   displayName: 'Download Build Artifacts'
-                  artifact: 'AzureTestProject'
+                  artifact: 'AzureArtifact'
                 
                 - task: IISWebAppManagementOnMachineGroup@0
                   name: 'StopIIS'
