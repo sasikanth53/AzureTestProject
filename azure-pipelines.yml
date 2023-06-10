@@ -45,12 +45,6 @@ steps:
     projects: '$(project)'
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: false
-    
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'AzureArtifact'
-    publishLocation: 'Container'
 
 stages:
   - stage: DeployWebsite
@@ -65,11 +59,10 @@ stages:
       strategy:
        runOnce:
          deploy:           
-            steps:
-            - checkout: none
-
-
-            - download: 'buildPipeline'
-              name: 'DownloadBuildArtifacts'            
-              displayName: 'Download build artifacts'
-              artifact: 'AzureTestProject'
+          steps:
+          - checkout: none
+          
+          - download: 'buildPipeline'
+            name: 'DownloadBuildArtifacts'            
+            displayName: 'Download build artifacts'
+            artifact: 'AzureTestProject'
