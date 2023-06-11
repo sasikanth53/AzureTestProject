@@ -1,13 +1,5 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - none
-
-pool:
-  vmImage: 'windows-latest'
 
 variables:
   buildPlatform: 'Any CPU'
@@ -15,58 +7,56 @@ variables:
   solution: '**/RoundTheCode.AzureTestProject.sln'
   project: '**/RoundTheCode.AzureTestProject.csproj'
 
-steps:
-- task: NuGetToolInstaller@1
-  name: 'NuGetToolInstaller'
-  displayName: 'NuGet tool installer'
-
-- task: NuGetCommand@2
-  name: 'NuGetRestore'
-  displayName: 'NuGet restore packages'
-  inputs:
-    command: 'restore'
-    restoreSolution: '$(solution)'
-    feedsToUse: 'select'
-
-- task: DotNetCoreCLI@2
-  name: 'Tests'
-  displayName: 'Run tests'
-  inputs:
-    command: 'test'
-    projects: '$(solution)'
-    arguments: '--configuration $(BuildConfiguration)'
-
-- task: DotNetCoreCLI@2
-  name: 'Publish'
-  displayName: 'Publish'
-  inputs:
-    command: 'publish'
-    publishWebProjects: false
-    projects: '$(project)'
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: false
-
 stages:
 
-  - stage: DeployWebsite
-    displayName: 'Deploy website'        
-    jobs:    
-    - job: DeployJob
-      displayName: 'Deploy Job'
-      pool:
-        vmImage: 'windows-latest'
-    
-        
-    - deployment: DeployWebsite
-      displayName: 'Deploy website'
-      environment: 'Windows 11 server.WebserverIIS'
-      strategy:
-       runOnce:
-         deploy:           
+- stage: Build
+  displayName: 'Build'
+  jobs:    
+  - job: BuildJob
+    displayName: 'Build Job'
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: NuGetToolInstaller@1
+      displayName: 'NuGet tool installer'
+
+    - task: NuGetCommand@2
+      displayName: 'NuGet restore packages'
+      inputs:
+        command: 'restore'
+        restoreSolution: '$(solution)'
+        feedsToUse: 'select'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Run tests'
+      inputs:
+        command: 'test'
+        projects: '$(solution)'
+        arguments: '--configuration $(BuildConfiguration)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish'
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: '$(project)'
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        zipAfterPublish: false
+
+- stage: DeployWebsite
+  displayName: 'Deploy website'        
+  jobs:    
+  - deployment: DeployWebsite
+    displayName: 'Deploy website'
+    environment: 'Windows 11 server.WebserverIIS'
+    pool:
+      vmImage: 'windows-latest'
+    strategy:
+      runOnce:
+        deploy:           
           steps:
           - checkout: none
           
           - download: 'buildPipeline'
-            name: 'DownloadBuildArtifacts'            
             displayName: 'Download build artifacts'
             artifact: 'AzureTestProject'
