@@ -57,6 +57,6 @@ stages:
           steps:
           - checkout: none
           
-          - download: 'buildPipeline'
+          - download: 'current'
             displayName: 'Download build artifacts'
             artifact: 'AzureTestProject'
